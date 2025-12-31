@@ -782,7 +782,16 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                         if not display_name:
                              display_name = S['unknown_device']
                              
-                        f.write(f"{indent}  - 🔌 **{display_name}** ({dev['Address']}) - {dev['ProductRef']}\n")
+                        product_text = dev['ProductRef']
+                        if dev.get('CatalogName'):
+                            product_text = dev['CatalogName']
+                             
+                        # Avoid redundancy if Display Name is same as Product Name
+                        suffix = f" - {product_text}"
+                        if display_name.strip() == product_text.strip():
+                            suffix = ""
+
+                        f.write(f"{indent}  - 🔌 **{display_name.strip()}** ({dev['Address']}){suffix}\n")
                 
                 write_structure(space['Children'], level + 1)
         
