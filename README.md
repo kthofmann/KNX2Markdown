@@ -32,6 +32,19 @@ Alternatively, you can specify the path directly:
 python3 knx2markdown.py /path/to/your/project.knxproj
 ```
 
+## Language Options
+
+The output language defaults to **German** (`de`).
+You can switch to English using the `--lang` argument:
+
+```bash
+python3 knx2markdown.py --lang en
+```
+
+Supported languages:
+*   `de`: German (Default)
+*   `en`: English
+
 ## Example Output
 
 The generated report includes:
