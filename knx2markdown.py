@@ -174,7 +174,7 @@ def get_ga_lookup(addresses):
                 lookup[short_id] = ga
     return lookup
 
-def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_map, param_lookup, param_types, module_data):
+def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_map, param_lookup, param_types, module_data, template_lookup):
     """Parses Topology/Devices and their Parameters."""
     print(f"DEBUG: Parsing devices for parameters...")
     devices = []
@@ -186,7 +186,7 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
         # app_prog_id: e.g. M-0083_A-00C2-41-8757
         
         if not app_prog_id or not ref_id:
-            return None, None
+            return None, None, None
             
         # 1. Identify Module
         # We look for a module belonging to this App that is mentioned in ref_id
@@ -213,12 +213,12 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                 break
         
         if not found_mod:
-            return None, None
+            return None, None, None
             
         # 2. Get Module Def
         def_ref = found_mod['DefRef']
         if def_ref not in module_data['defs']:
-            return None, None
+            return None, None, None
             
         mod_def = module_data['defs'][def_ref]
         
@@ -266,9 +266,9 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
         
         if found_co:
             final_num = base_offset + co_base_num
-            return final_num, found_def_co_id
+            return final_num, found_def_co_id, found_mod
             
-        return None, None
+        return None, None, None
 
     # Iterate through Topology recursively to find all DeviceInstance nodes
     for installation in root.findall('.//knx:Installation', NS):
@@ -309,11 +309,34 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                             final_ref_id = ref_id
                             
                             # --- MODULE RESOLUTION ---
-                            resolved_num, def_co_id = resolve_module_ref(ref_id, app_prog_id)
+                            resolved_num, def_co_id, mod_instance = resolve_module_ref(ref_id, app_prog_id)
                             if resolved_num is not None:
                                 final_ref_id = f"O-{resolved_num}"
-                                # Look up the Name using the Definition ID
-                                if def_co_id in comobj_lookup:
+                                
+                                # 1. Try Template Substitution
+                                if def_co_id in template_lookup:
+                                    template_str = template_lookup[def_co_id]
+                                    
+                                    # Get Argument Definitions (Id->Name) and Values (Id->Value)
+                                    def_ref = mod_instance['DefRef']
+                                    if def_ref in module_data['defs']:
+                                        args_def = module_data['defs'][def_ref]['Args']
+                                        args_val = mod_instance['Args']
+                                        
+                                        # Substitute {{ArgName}}
+                                        for arg_id, arg_name in args_def.items():
+                                            if arg_id in args_val:
+                                                val = args_val[arg_id]
+                                                template_str = template_str.replace(f"{{{{{arg_name}}}}}", str(val))
+                                        
+                                        # Substitute {{0}} with Base Name
+                                        base_name = comobj_lookup.get(def_co_id, "")
+                                        template_str = template_str.replace("{{0}}", base_name)
+                                        
+                                        obj_name = template_str
+
+                                # 2. Fallback to direct lookup
+                                if not obj_name and def_co_id in comobj_lookup:
                                     obj_name = comobj_lookup[def_co_id]
                             # -------------------------
                             
@@ -500,6 +523,7 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
     comobj_lookup = {}
     param_lookup = {}
     param_types = {}
+    template_lookup = {}
     
     # New Lookups for Modules
     # module_lookup: { "AppId_ModuleId": { "ArgId": Value } }
@@ -618,13 +642,32 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
                                 ref_id = unit.attrib.get('RefId')
                                 
                                 # ComObject Translation
-                                if ref_id in comobj_lookup:
-                                    for element in unit.findall('knx:TranslationElement', ns) if ns else unit.findall('TranslationElement'):
-                                         for trans in element.findall('knx:Translation', ns) if ns else element.findall('Translation'):
-                                             if trans.attrib.get('AttributeName') == 'Text':
-                                                 comobj_lookup[ref_id] = trans.attrib.get('Text')
-                                             elif trans.attrib.get('AttributeName') == 'FunctionText' and not comobj_lookup[ref_id]:
-                                                 comobj_lookup[ref_id] = trans.attrib.get('Text')
+                                # Iterate elements effectively
+                                for element in unit.findall('knx:TranslationElement', ns) if ns else unit.findall('TranslationElement'):
+                                     el_ref = element.attrib.get('RefId')
+                                     
+                                     for trans in element.findall('knx:Translation', ns) if ns else element.findall('Translation'):
+                                         text = trans.attrib.get('Text')
+                                         attr = trans.attrib.get('AttributeName')
+                                         
+                                         # Special handling for Templates
+                                         if text and '{{' in text:
+                                             # Try to map el_ref (which might have _R- suffix) to a ComObject ID
+                                             if el_ref in comobj_lookup:
+                                                 template_lookup[el_ref] = text
+                                             elif '_R-' in el_ref and '_O-' in el_ref:
+                                                 stripped_ref = el_ref.rsplit('_R-', 1)[0]
+                                                 if stripped_ref in comobj_lookup:
+                                                     template_lookup[stripped_ref] = text
+
+                                         # Standard Application for non-templates or fallback
+                                         target_ref = el_ref if el_ref in comobj_lookup else ref_id
+                                         
+                                         if target_ref in comobj_lookup:
+                                             if attr == 'Text':
+                                                 comobj_lookup[target_ref] = text
+                                             elif attr == 'FunctionText' and not comobj_lookup[target_ref]:
+                                                  comobj_lookup[target_ref] = text
 
                                 # Parameter Translation
                                 if ref_id in param_lookup:
@@ -636,7 +679,8 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
                 except Exception as e:
                     print(f"Error parsing AppProgram {filename}: {e}")
                     
-    return comobj_lookup, param_lookup, param_types, module_data
+    return comobj_lookup, param_lookup, param_types, module_data, template_lookup
+
 
 def parse_locations(root, device_lookup):
     """Parses Building/Space structure from the XML tree."""
@@ -905,14 +949,14 @@ def main():
     product_lookup, product_app_map = parse_hardware_catalog(knxproj_path, lang_code)
     
     print("Parsing Application Programs for ComObject detailed names...")
-    comobj_lookup, param_lookup, param_types, module_data = parse_application_programs(knxproj_path, lang_code)
+    comobj_lookup, param_lookup, param_types, module_data, template_lookup = parse_application_programs(knxproj_path, lang_code)
     
     # 5. Parse Data
     print("Parsing Group Addresses and Devices...")
     gas = parse_group_addresses(root)
     ga_lookup = get_ga_lookup(gas)
     
-    devices, device_lookup = parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_map, param_lookup, param_types, module_data)
+    devices, device_lookup = parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_map, param_lookup, param_types, module_data, template_lookup)
     
     # Enrich devices with Catalog Names
     for dev in devices:
