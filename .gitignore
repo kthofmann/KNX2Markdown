@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# KNX Project Data (User Data)
+*.knxproj
+
+# Output
+*Export.md
+*.md
+!README.md
+
+# Backups
+*_backup*.py
