@@ -15,7 +15,7 @@ Only Python 3 is required. No further dependencies.
 
 1.  Download the script:
     ```bash
-    curl -O https://raw.githubusercontent.com/YOUR_USER/KNX2Markdown/main/knx2markdown.py
+    curl -O https://raw.githubusercontent.com/kthofmann/KNX2Markdown/main/knx2markdown.py
     ```
 
 ## Usage
