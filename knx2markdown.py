@@ -615,7 +615,22 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                 f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_links']} |\n")
                 f.write("|---|---|---|---|\n")
                 
-                for co in dev['ComObjects']:
+                # Logic to extract integer from RefId (e.g., "O-12_R-5" -> 12)
+                def get_obj_num(co):
+                    try:
+                        # Extract the first number found after 'O-'
+                        ref = co['RefId']
+                        if 'O-' in ref:
+                            num_part = ref.split('O-')[1].split('_')[0]
+                            return int(num_part)
+                        return 999999 # Fallback for weird IDs
+                    except:
+                        return 999999
+
+                # Sort by Object Number
+                sorted_objects = sorted(dev['ComObjects'], key=get_obj_num)
+
+                for co in sorted_objects:
                     # Clean up RefId
                     obj_num = co['RefId']
                     if 'O-' in obj_num:
