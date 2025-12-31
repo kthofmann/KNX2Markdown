@@ -331,7 +331,17 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                                         
                                         # Substitute {{0}} with Base Name
                                         base_name = comobj_lookup.get(def_co_id, "")
-                                        template_str = template_str.replace("{{0}}", base_name)
+                                        
+                                        # Cleanup redundant suffixes if Base Name is "Channel A" or "Kanal A"
+                                        if base_name in ["Channel A", "Kanal A"]:
+                                            if ": {{0}}" in template_str:
+                                                template_str = template_str.replace(": {{0}}", "")
+                                            elif " - {{0}}" in template_str:
+                                                 template_str = template_str.replace(" - {{0}}", "")
+                                            else:
+                                                 template_str = template_str.replace("{{0}}", "")
+                                        else:
+                                            template_str = template_str.replace("{{0}}", base_name)
                                         
                                         obj_name = template_str
 
