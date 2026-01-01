@@ -7,6 +7,7 @@ __pycache__/
 
 # KNX Project Data (User Data)
 *.knxproj
+HofmannsHome-ProjektReport/
 
 # Output
 *Export.md
