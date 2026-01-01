@@ -798,13 +798,6 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
         write_structure(locations)
         f.write("\n")
 
-        f.write(f"## {S['gas_header']}\n")
-        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_dpt']} | {S['table_main']} | {S['table_mid']} |\n")
-        f.write("|---|---|---|---|---|\n")
-        for ga in sorted(gas, key=lambda x: [int(p) for p in x['Address'].split('/')]):
-            dpt = ga['DPT'] if ga['DPT'] else "-"
-            f.write(f"| {ga['Address']} | {ga['Name']} | {dpt} | {ga['MainGroup']} | {ga['MiddleGroup']} |\n")
-            
         f.write(f"\n## {S['dev_header']}\n")
         f.write(f"> {S['dev_legend']}\n\n")
         f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_prodref']} | {S['table_status']} |\n")
@@ -822,6 +815,26 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
              st_str = f"`{flag('Adr','Adr')}{flag('Prg','Prg')}{flag('Par','Par')}{flag('Grp','Grp')}{flag('Cfg','Cfg')}`"
              
              f.write(f"| {dev['Address']} | {dev['Name']} | {cat_name} | {st_str} |\n")
+
+        # --- Device Parameters Section ---
+        f.write(f"\n## {S['param_header']}\n")
+        f.write(f"> {S['param_note']}\n\n")
+        
+        # Only devices with parameters
+        devices_with_params = [d for d in devices if 'Parameters' in d and d['Parameters']]
+        
+        if not devices_with_params:
+            f.write(f"{S['param_none']}\n")
+        
+        for dev in sorted(devices_with_params, key=lambda x: [int(p) for p in x['Address'].split('.')]):
+            cat_name = dev.get('CatalogName', dev['ProductRef'])
+            f.write(f"### ⚙️ {dev['Address']} - {dev['Name']} ({cat_name})\n")
+            f.write(f"| Parameter | {S['table_val']} | {S['table_raw']} |\n")
+            f.write("|---|---|---|\n")
+            
+            for p in dev['Parameters']:
+                f.write(f"| {p['Name']} | **{p['Value']}** | `{p['RawValue']}` |\n")
+            f.write("\n")
 
         f.write(f"\n## {S['conn_header']}\n")
         f.write(f"> {S['conn_legend']}\n\n")
@@ -892,25 +905,12 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                     f.write(f"| {obj_num} | {name} | {flags_visual} | {links_formatted} |\n")
                 f.write("\n")
 
-        # --- Device Parameters Section ---
-        f.write(f"\n## {S['param_header']}\n")
-        f.write(f"> {S['param_note']}\n\n")
-        
-        # Only devices with parameters
-        devices_with_params = [d for d in devices if 'Parameters' in d and d['Parameters']]
-        
-        if not devices_with_params:
-            f.write(f"{S['param_none']}\n")
-        
-        for dev in sorted(devices_with_params, key=lambda x: [int(p) for p in x['Address'].split('.')]):
-            cat_name = dev.get('CatalogName', dev['ProductRef'])
-            f.write(f"### ⚙️ {dev['Address']} - {dev['Name']} ({cat_name})\n")
-            f.write(f"| Parameter | {S['table_val']} | {S['table_raw']} |\n")
-            f.write("|---|---|---|\n")
-            
-            for p in dev['Parameters']:
-                f.write(f"| {p['Name']} | **{p['Value']}** | `{p['RawValue']}` |\n")
-            f.write("\n")
+        f.write(f"## {S['gas_header']}\n")
+        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_dpt']} | {S['table_main']} | {S['table_mid']} |\n")
+        f.write("|---|---|---|---|---|\n")
+        for ga in sorted(gas, key=lambda x: [int(p) for p in x['Address'].split('/')]):
+            dpt = ga['DPT'] if ga['DPT'] else "-"
+            f.write(f"| {ga['Address']} | {ga['Name']} | {dpt} | {ga['MainGroup']} | {ga['MiddleGroup']} |\n")
 
     print(f"Markdown report generated: {filename}")
 
