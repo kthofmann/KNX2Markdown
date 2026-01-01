@@ -483,12 +483,17 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                     manufacturer = ""
                     order_num = ""
                     
+                    width = ""
+                    is_rail = False
+                    
                     if product_ref in product_lookup:
                         p_info = product_lookup[product_ref]
                         if isinstance(p_info, dict):
                              cat_name = p_info.get('Name', '')
                              manufacturer = p_info.get('Manufacturer', '')
                              order_num = p_info.get('OrderNumber', '')
+                             width = p_info.get('Width', '')
+                             is_rail = p_info.get('IsRailMounted', False)
                         else:
                              cat_name = p_info # fallback for legacy string
                     
@@ -504,7 +509,12 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                         'CatalogName': cat_name,
                         'Manufacturer': manufacturer,
                         'OrderNumber': order_num,
+                        'Width': width,
+                        'IsRailMounted': is_rail,
                         'Description': dev.attrib.get('Description', ''),
+                        'SerialNumber': dev.attrib.get('SerialNumber', ''),
+                        'Comment': dev.attrib.get('Comment', ''),
+                        'InstallationHints': dev.attrib.get('InstallationHints', ''),
                         'ComObjects': com_objects,
                         'Parameters': parameters,
                         'Status': status
@@ -580,13 +590,17 @@ def parse_hardware_catalog(knxproj_path, language_code='de-DE'):
                                 pid = product.attrib.get('Id')
                                 text = product.attrib.get('Text')
                                 order_num = product.attrib.get('OrderNumber')
+                                is_rail = product.attrib.get('IsRailMounted', 'false').lower() == 'true'
+                                width = product.attrib.get('WidthInMillimeter', '0')
                                 
                                 if pid:
                                     # Store dictionary instead of just text
                                     product_lookup[pid] = {
                                         'Name': text,
                                         'Manufacturer': man_name,
-                                        'OrderNumber': order_num
+                                        'OrderNumber': order_num,
+                                        'IsRailMounted': is_rail,
+                                        'Width': width
                                     }
                                 if pid and app_ref:
                                     product_app_map[pid] = app_ref
@@ -897,12 +911,23 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
 
         f.write(f"\n## {S['dev_header']}\n")
         f.write(f"> {S['dev_legend']}\n\n")
-        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_ordernum']} | {S['table_prodref']} | {S['table_man']} | {S['table_status']} |\n")
-        f.write("|---|---|---|---|---|---|\n")
+        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_ordernum']} | {S['table_prodref']} | {S['table_man']} | TE | REG | {S['table_status']} |\n")
+        f.write("|---|---|---|---|---|---|---|---|\n")
         for dev in sorted(devices, key=lambda x: [int(p) for p in x['Address'].split('.')]):
              cat_name = dev.get('CatalogName', '-')
              manufacturer = dev.get('Manufacturer', '-')
              order_num = dev.get('OrderNumber', '-')
+             
+             # Calculate TE (1 TE = 18mm)
+             te_val = ""
+             try:
+                 width_mm = float(dev.get('Width', 0))
+                 if width_mm > 0:
+                     te_val = f"{width_mm / 18.0:.1f}".rstrip('0').rstrip('.')
+             except:
+                 pass
+                 
+             reg_val = "Ja" if dev.get('IsRailMounted') else "-"
              
              # Format Status
              # Ad Pr Pa Gr Cf
@@ -913,7 +938,7 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                  
              st_str = f"`{flag('Adr','Adr')}{flag('Prg','Prg')}{flag('Par','Par')}{flag('Grp','Grp')}{flag('Cfg','Cfg')}`"
              
-             f.write(f"| {dev['Address']} | {dev['Name']} | {order_num} | {cat_name} | {manufacturer} | {st_str} |\n")
+             f.write(f"| {dev['Address']} | {dev['Name']} | {order_num} | {cat_name} | {manufacturer} | {te_val} | {reg_val} | {st_str} |\n")
 
         # --- Device Parameters Section ---
         f.write(f"\n## {S['param_header']}\n")
@@ -944,6 +969,14 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                 f.write(f"### 🔌 {dev['Address']} - {dev['Name']} ({cat_name})\n")
                 if dev['Description']:
                     f.write(f"- **{S['desc']}**: {dev['Description']}\n")
+                if dev.get('SerialNumber'):
+                    f.write(f"- **Seriennummer**: {dev['SerialNumber']}\n")
+                if dev.get('Comment'):
+                     f.write(f"- **Kommentar**: {dev['Comment']}\n")
+                if dev.get('InstallationHints'):
+                     f.write(f"- **Installations-Hinweise**: {dev['InstallationHints']}\n")
+                
+                f.write(f"\n")
                 
                 f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_prio']} | {S['conn_dpt']} | {S['conn_links']} |\n")
                 f.write("|---|---|---|---|---|---|\n")

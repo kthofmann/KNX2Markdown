@@ -52,33 +52,33 @@
 > **Legende**:
 > * **Flags**: `A`=Adresse, `P`=Programm, `Pa`=Parameter, `G`=Gruppen, `K`=Konfig. [X] = Programmiert, [.] = Nicht programmiert, [?] = Unbekannt
 
-| Adresse | Name | Bestellnummer | Produkt Ref | Hersteller | Prog. Status |
-|---|---|---|---|---|---|
-| 0.0.10 | Home Assistant | Dummy | Dummy | Gira | `.....` |
-| 1.0.0 | Enertex KNX IP Secure Router | 1164 | Enertex KNX IP Secure Router | Enertex Bayern GmbH | `APPaGK` |
-| 1.0.9 | IP-Systemgeräte - Zusatzfunktion | 1164 - 1168 | IP-Systemgeräte - Zusatzfunktion | Enertex Bayern GmbH | `APPaGK` |
-| 1.0.10 | Enertex KNX Dual PowerSupply 1280 | 1173 | Enertex KNX Dual PowerSupply 1280 | Enertex Bayern GmbH | `APPaGK` |
-| 1.0.11 | SCN-LOG1.02 Logikmodul Haus | SCN-LOG1.02 | SCN-LOG1.02 Logikmodul | MDT Technologies | `APPaGK` |
-| 1.0.20 | AKU-0816.03 Universalaktor 8-fach - Haus 01 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies | `APPaGK` |
-| 1.0.21 | AKU-0816.03 Universalaktor 8-fach - Haus 02 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies | `APPaGK` |
-| 1.0.22 | AKU-0816.03 Universalaktor 8-fach - Haus 03 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies | `APPaGK` |
-| 1.0.40 | KNX Multi IO 570 (48I/O) | KNX Multi IO 570 | KNX Multi IO 570 (48I/O) | Weinzierl Engineering GmbH | `APPaGK` |
-| 1.1.0 | Enertex KNX TP Secure Coupler | 1171 | Enertex KNX TP Secure Coupler | Enertex Bayern GmbH | `APPaGK` |
-| 1.1.10 | Enertex KNX PowerSupply 960³ | 1152-3 | Enertex KNX PowerSupply 960³ | Enertex Bayern GmbH | `APPaGK` |
-| 1.1.11 | SCN-LOG1.02 Logikmodul Garage | SCN-LOG1.02 | SCN-LOG1.02 Logikmodul | MDT Technologies | `APPaGK` |
-| 1.1.20 | AKU-0816.03 Universalaktor 8-fach - Garage | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies | `APPaGK` |
-| 1.1.21 | AKD-0424R2.02 - Dimmaktor Garage | AKD-0424R2.02 | AKD-0424R2.02 LED Controller 4 Kanal/RGBW, 2TE REG | MDT Technologies | `APPaGK` |
-| 1.1.30 | Hörmann KNX-Gateway | 4511630 | KNX-Gateway | Hörmann KG Verkaufsgesellschaft | `APPaGK` |
-| 1.1.50 | BE-GT20x.02 Glastaster II Smart | BE-GT20x.02 | BE-GT20x.02 Glastaster II Smart | MDT Technologies | `APPaGK` |
-| 1.1.51 | Garage Taster Tor-Nachbar | 5162 30 | Taster Busankoppler AP WG 2fach Zweipunktbedienung | Gira | `APPaGK` |
-| 1.1.52 | Garage Taster Tor-Feld | 5162 30 | Taster Busankoppler AP WG 2fach Zweipunktbedienung | Gira | `APPaGK` |
-| 1.1.70 | KNX IO 410 - Binäreingang 4-fach Garage | KNX IO 410 | KNX IO 410 (4I) | Weinzierl Engineering GmbH | `APPaGK` |
-| 1.1.100 | 6131/31 Busch-Präsenzmelder Premium | 6131/31 | 6131/31 Busch-Präsenzmelder Premium | Busch-Jaeger | `APPaGK` |
-| 1.1.101 | SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten | SCN-BWM55T.G2 | SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten | MDT Technologies | `APPaGK` |
-| 1.1.102 | theLuxa P300 KNX - Garage Präsenz Aussen Tor | 1019610 | theLuxa P300 KNX | Theben AG | `APPaGK` |
-| 1.1.201 | Raumtemperatursensor 1-fach UP | SCN-TS1UP.01 | Raumtemperatursensor 1-fach UP | MDT Technologies | `APPaGK` |
-| 1.3.0 | KNX IO 534 CV (4D) | KNX IO 534 (4D) | KNX IO 534 CV (4D) | Weinzierl Engineering GmbH | `.....` |
-| 1.3.0 | AKD-0230CC.02 LED Controller CC/CV 30 W / 230 V 2-Kanal | AKD-0230CC.02 | AKD-0230CC.02 LED Controller CC/CV 30 W / 230 V 2-Kanal | MDT Technologies | `.....` |
+| Adresse | Name | Bestellnummer | Produkt Ref | Hersteller | TE | REG | Prog. Status |
+|---|---|---|---|---|---|---|---|
+| 0.0.10 | Home Assistant | Dummy | Dummy | Gira |  | - | `.....` |
+| 1.0.0 | Enertex KNX IP Secure Router | 1164 | Enertex KNX IP Secure Router | Enertex Bayern GmbH | 2 | Ja | `APPaGK` |
+| 1.0.9 | IP-Systemgeräte - Zusatzfunktion | 1164 - 1168 | IP-Systemgeräte - Zusatzfunktion | Enertex Bayern GmbH | 2 | Ja | `APPaGK` |
+| 1.0.10 | Enertex KNX Dual PowerSupply 1280 | 1173 | Enertex KNX Dual PowerSupply 1280 | Enertex Bayern GmbH | 5.9 | Ja | `APPaGK` |
+| 1.0.11 | SCN-LOG1.02 Logikmodul Haus | SCN-LOG1.02 | SCN-LOG1.02 Logikmodul | MDT Technologies | 2 | Ja | `APPaGK` |
+| 1.0.20 | AKU-0816.03 Universalaktor 8-fach - Haus 01 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies |  | - | `APPaGK` |
+| 1.0.21 | AKU-0816.03 Universalaktor 8-fach - Haus 02 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies |  | - | `APPaGK` |
+| 1.0.22 | AKU-0816.03 Universalaktor 8-fach - Haus 03 | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies |  | - | `APPaGK` |
+| 1.0.40 | KNX Multi IO 570 (48I/O) | KNX Multi IO 570 | KNX Multi IO 570 (48I/O) | Weinzierl Engineering GmbH | 4 | Ja | `APPaGK` |
+| 1.1.0 | Enertex KNX TP Secure Coupler | 1171 | Enertex KNX TP Secure Coupler | Enertex Bayern GmbH | 2 | Ja | `APPaGK` |
+| 1.1.10 | Enertex KNX PowerSupply 960³ | 1152-3 | Enertex KNX PowerSupply 960³ | Enertex Bayern GmbH | 5.9 | Ja | `APPaGK` |
+| 1.1.11 | SCN-LOG1.02 Logikmodul Garage | SCN-LOG1.02 | SCN-LOG1.02 Logikmodul | MDT Technologies | 2 | Ja | `APPaGK` |
+| 1.1.20 | AKU-0816.03 Universalaktor 8-fach - Garage | AKU-0816.03 | AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC | MDT Technologies |  | - | `APPaGK` |
+| 1.1.21 | AKD-0424R2.02 - Dimmaktor Garage | AKD-0424R2.02 | AKD-0424R2.02 LED Controller 4 Kanal/RGBW, 2TE REG | MDT Technologies | 4 | Ja | `APPaGK` |
+| 1.1.30 | Hörmann KNX-Gateway | 4511630 | KNX-Gateway | Hörmann KG Verkaufsgesellschaft |  | - | `APPaGK` |
+| 1.1.50 | BE-GT20x.02 Glastaster II Smart | BE-GT20x.02 | BE-GT20x.02 Glastaster II Smart | MDT Technologies |  | - | `APPaGK` |
+| 1.1.51 | Garage Taster Tor-Nachbar | 5162 30 | Taster Busankoppler AP WG 2fach Zweipunktbedienung | Gira |  | - | `APPaGK` |
+| 1.1.52 | Garage Taster Tor-Feld | 5162 30 | Taster Busankoppler AP WG 2fach Zweipunktbedienung | Gira |  | - | `APPaGK` |
+| 1.1.70 | KNX IO 410 - Binäreingang 4-fach Garage | KNX IO 410 | KNX IO 410 (4I) | Weinzierl Engineering GmbH | 1 | Ja | `APPaGK` |
+| 1.1.100 | 6131/31 Busch-Präsenzmelder Premium | 6131/31 | 6131/31 Busch-Präsenzmelder Premium | Busch-Jaeger |  | - | `APPaGK` |
+| 1.1.101 | SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten | SCN-BWM55T.G2 | SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten | MDT Technologies |  | - | `APPaGK` |
+| 1.1.102 | theLuxa P300 KNX - Garage Präsenz Aussen Tor | 1019610 | theLuxa P300 KNX | Theben AG |  | - | `APPaGK` |
+| 1.1.201 | Raumtemperatursensor 1-fach UP | SCN-TS1UP.01 | Raumtemperatursensor 1-fach UP | MDT Technologies |  | - | `APPaGK` |
+| 1.3.0 | KNX IO 534 CV (4D) | KNX IO 534 (4D) | KNX IO 534 CV (4D) | Weinzierl Engineering GmbH | 1 | Ja | `.....` |
+| 1.3.0 | AKD-0230CC.02 LED Controller CC/CV 30 W / 230 V 2-Kanal | AKD-0230CC.02 | AKD-0230CC.02 LED Controller CC/CV 30 W / 230 V 2-Kanal | MDT Technologies |  | - | `.....` |
 
 ## Geräteparameter
 > **Hinweis**: Zeigt explizit konfigurierte Parameter aus der Projektdatei.
@@ -999,6 +999,7 @@ Taste | **EIN** | `1` |
 > * **Verknüpfungen**: `[S]` = Sendende Adresse (Erste Verknüpfung wenn Ü-Flag aktiv)
 
 ### 🔌 0.0.10 - Home Assistant (Dummy)
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | 1 Bit (1) | `K....` | Low |  | `7/4/120` Garage-Präsenz-Innen-Externe-Bewegung<br>`0/0/4` Sommer- / Winterzeit<br>`0/0/6` Astrofunktion: Tag = 0 / Nacht = 1<br>`7/4/124` Garage-Präsenz-Innen-Meldung<br>`0/0/8` Werktag (Mo - Fr)<br>`0/1/0` Gartentor-Auf<br>`0/1/1` Gartentor-Zu<br>`0/1/2` Gartentor-Stop<br>`0/1/3` Gartentor-Status-Bewegung<br>`0/1/10` Garagentor-Fahren<br>`0/1/11` Garagentor-Stop<br>`0/1/12` Garagentor-Lüftung-Schmal<br>`0/1/17` Garagentor-Status-Offen<br>`0/1/19` Garagentor-Status-Bewegung-Öffnen<br>`0/1/20` Garagentor-Status-Bewegung-Schliessen<br>`1/0/120` Garage-Innen-LED-Band-Nachbar-Schalten<br>`1/0/121` Garage-Innen-LED-Band-Tuer-Schalten<br>`1/0/122` Garage-Innen-LED-Band-Feld-Schalten<br>`1/0/123` Garage-Innen-LED-Band-Mitte-Schalten<br>`1/0/124` Gruppe-Garage-Innen-LED-Band-Schalten<br>`1/0/125` Garage-Aussen-Downlights-Tor-Schalten<br>`1/0/126` Garage-Aussen-Downlights-Tuer-Schalten<br>`1/0/127` Gruppe-Garage-Aussen-Downlights-Schalten<br>`1/0/128` Garage-Aussen-Steckdosen-Schalten<br>`1/0/129` Garagentor-Licht-Schalten<br>`1/1/120` Garage-Innen-LED-Band-Nachbar-Status-Schalten<br>`1/1/121` Garage-Innen-LED-Band-Tuer-Status-Schalten<br>`1/1/122` Garage-Innen-LED-Band-Feld-Status-Schalten<br>`1/1/123` Garage-Innen-LED-Band-Mitte-Status-Schalten<br>`1/1/124` Gruppe-Garage-Innen-LED-Band-Status-Schalten<br>`1/1/125` Garage-Aussen-Downlights-Tor-Status-Schalten<br>`1/1/126` Garage-Aussen-Downlights-Tuer-Status-Schalten<br>`1/1/127` Gruppe-Garage-Aussen-Downlights-Status-Schalten<br>`1/1/128` Garage-Aussen-Steckdosen-Status-Schalten<br>`1/1/129` Garagentor-Licht-Status-Schalten<br>`0/4/1` Licht-Zentral<br>`0/4/10` Licht-Zentral-Innen<br>`0/4/12` Licht-Zentral-Innen-Unten<br>`0/4/14` Licht-Zentral-Innen-Oben<br>`0/4/20` Licht-Zentral-Aussen<br>`1/7/120` Garage-LED-Band-Dimmer-Überstrom-Alarm<br>`1/7/121` Garage-LED-Band-Dimmer-Übertemperatur-Alarm<br>`1/7/122` Garage-LED-Band-Dimmer-Spannungsversorgung<br>`0/1/50` Garage-Fenster-Auf/Ab<br>`0/1/51` Garage-Fenster-Stopp<br>`0/1/52` Garage-Fenster-Status-Bewegung<br>`7/0/14` Haus-Netzteil-Analysereset<br>`7/0/62` Garage-Netzteil-Analysereset<br>`7/0/66` Garage-Netzteil-RemoteBusreset<br>`7/0/67` Garage-Netzteil-Spannungsreset-AuxA<br>`7/4/121` Garage-Präsenz-Innen-Externer-Taster<br>`7/4/125` Garage-Präsenz-Innen-Meldung-Extern<br>`0/1/18` Garagentor-Status-Geschlossen<br>`0/1/55` Garage-Fenster-Status-aktuelle-Richtung<br>`0/1/56` Garage-Fenster-Status-Obere-Position<br>`0/1/57` Garage-Fenster-Status-Untere-Position<br>`0/1/15` Garagentor-Status-Lüftung<br>`0/1/13` Garagentor-Lüftung<br>`0/1/21` Garagentor-Status-Vorwarnzeit-Aktiv<br>`0/1/22` Garagentor-Status-Aufhaltezeit-Aktiv<br>`0/1/23` Garagentor-Status-Inspektion-Notwendig<br>`0/1/24` Garagentor-Status-Fehler-Hohe-Prio<br>`0/1/25` Garagentor-Status-Fehler-Niedrige-Prio<br>`0/1/26` Garagentor-Status-Antrieb-Gesperrt<br>`0/1/38` Garagentor-Status-Riegelstatus<br>`0/1/39` Garagentor-Status-Konfigurationsfehler<br>`0/1/40` Garagentor-Status-Torposition-Ungültig<br>`0/1/45` Alles Auf - Eingang<br>`0/1/46` Alles Auf - Ausgang 1 - Garagentor<br>`0/1/47` Alles Auf - Ausgang 2 - Gartentor<br>`0/1/14` Garagentor-Status-Lüftung-Schmal<br>`7/2/1` Regenalarm<br>`7/4/126` Garage-Präsenz-Aussen-Tor-Links<br>`7/4/127` Garage-Präsenz-Aussen-Tor-Mitte<br>`7/4/128` Garage-Präsenz-Aussen-Tor-Rechts<br>`0/0/100` NTP Server Synch anfordern |
@@ -1069,6 +1070,8 @@ Taste | **EIN** | `1` |
 | 65 | 14 Byte (3) | `.....` | Low |  | - |
 
 ### 🔌 1.0.9 - IP-Systemgeräte - Zusatzfunktion (IP-Systemgeräte - Zusatzfunktion)
+- **Seriennummer**: AKYlgAgp
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 3 | Uhrzeit - Ausgang | `K....` | Low | DPST-10-1 | `0/0/1` Uhrzeit |
@@ -1079,6 +1082,8 @@ Taste | **EIN** | `1` |
 | 8 | Sommer- / Winterzeit - Ausgang | `K....` | Low | DPST-1-2 | `0/0/4` Sommer- / Winterzeit |
 
 ### 🔌 1.0.10 - Enertex KNX Dual PowerSupply 1280 (Enertex KNX Dual PowerSupply 1280)
+- **Seriennummer**: AKYmAAbk
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 1 | Anzahl der Spannungsausfälle | `K....` | Low | DPST-7-1 | `7/0/0` Haus-Netzteil-Anzahl-Spannungsausfälle |
@@ -1126,6 +1131,8 @@ Taste | **EIN** | `1` |
 | 150 | Tag/Nacht (1=Tag 0=Nacht) | `K....` | Low | DPST-1-2 | `0/0/6` Astrofunktion: Tag = 0 / Nacht = 1 |
 
 ### 🔌 1.0.11 - SCN-LOG1.02 Logikmodul Haus (SCN-LOG1.02 Logikmodul)
+- **Seriennummer**: AIOGvAVy
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | F 1 | `K....` | Low |  | `1/1/2` EG-Flur-Spots-Status-Schalten |
@@ -1145,6 +1152,8 @@ Taste | **EIN** | `1` |
 | 245 | Datum | `K....` | Low | DPST-11-1 | `0/0/2` Datum |
 
 ### 🔌 1.0.20 - AKU-0816.03 Universalaktor 8-fach - Haus 01 (AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC)
+- **Seriennummer**: AIOHlAzU
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 8 | Zentralfunktion | `KL.Ü.` | Low | DPST-1-1 | **[S]** `0/2/1` Licht-Zentral-Status<br>`0/4/1` Licht-Zentral<br>`0/4/10` Licht-Zentral-Innen |
@@ -1166,6 +1175,8 @@ Taste | **EIN** | `1` |
 | 143 | Kanal H | `K....` | Low | DPST-1-11 | `1/1/70` OG-Gaestezimmer-Deckenleuchte-Status-Schalten |
 
 ### 🔌 1.0.21 - AKU-0816.03 Universalaktor 8-fach - Haus 02 (AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC)
+- **Seriennummer**: AIOJGgeW
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 8 | Zentralfunktion | `KL.Ü.` | Low | DPST-1-1 | **[S]** `0/2/3` Licht-Zentral-Status<br>`0/4/1` Licht-Zentral<br>`0/4/10` Licht-Zentral-Innen |
@@ -1187,6 +1198,8 @@ Taste | **EIN** | `1` |
 | 143 | Kanal H | `K....` | Low | DPST-1-11 | `1/1/81` OG-Schlafzimmer-Ankleide-Deckenleuchte-Status-Schalten |
 
 ### 🔌 1.0.22 - AKU-0816.03 Universalaktor 8-fach - Haus 03 (AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC)
+- **Seriennummer**: AIOJGgdK
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 8 | Zentralfunktion | `KL.Ü.` | Low | DPST-1-1 | **[S]** `0/2/2` Licht-Zentral-Status<br>`0/4/1` Licht-Zentral |
@@ -1206,6 +1219,8 @@ Taste | **EIN** | `1` |
 | 128 | Kanal G | `K....` | Low | DPST-1-11 | `1/1/114` Garten-Beet-Hinten-Licht-Status-Schalten |
 
 ### 🔌 1.0.40 - KNX Multi IO 570 (48I/O) (KNX Multi IO 570 (48I/O))
+- **Seriennummer**: AMUBAs/A
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 11 | GO_BASE_1 | `K.S..` | Low | DPT-16 DPST-16-0 | `1/0/1` EG-Flur-Deckenleuchte-Schalten<br>`1/1/1` EG-Flur-Deckenleuchte-Status-Schalten |
@@ -1238,6 +1253,8 @@ Taste | **EIN** | `1` |
 | 973 | GO_BASE_33 | `.L...` | Low | DPT-1 DPST-1-2 | - |
 
 ### 🔌 1.1.10 - Enertex KNX PowerSupply 960³ (Enertex KNX PowerSupply 960³)
+- **Seriennummer**: AKYnAAgX
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 1 | Anzahl der Spannungsausfälle | `K....` | Low | DPST-7-1 | `7/0/50` Garage-Netzteil-Anzahl-Spannungsausfälle |
@@ -1290,6 +1307,7 @@ Taste | **EIN** | `1` |
 | 197 | Schaltuhr 3 - Telegramm 2 | `K....` | Low | DPST-232-600 | `0/4/20` Licht-Zentral-Aussen |
 
 ### 🔌 1.1.11 - SCN-LOG1.02 Logikmodul Garage (SCN-LOG1.02 Logikmodul)
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | F 1 | `K....` | Low |  | `0/1/45` Alles Auf - Eingang |
@@ -1305,6 +1323,8 @@ Taste | **EIN** | `1` |
 | 245 | Datum | `K....` | Low | DPST-11-1 | `0/0/2` Datum |
 
 ### 🔌 1.1.20 - AKU-0816.03 Universalaktor 8-fach - Garage (AKU-0816.03 Universalaktor 8-fach, 16A, 230VAC)
+- **Seriennummer**: AIOEugc3
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 8 | Zentralfunktion | `KL.Ü.` | Low | DPST-1-1 | **[S]** `0/2/0` Licht-Zentral-Status<br>`0/4/1` Licht-Zentral |
@@ -1325,6 +1345,8 @@ Taste | **EIN** | `1` |
 | 98 | Kanal E | `K....` | Low | DPST-1-11 | `1/1/128` Garage-Aussen-Steckdosen-Status-Schalten |
 
 ### 🔌 1.1.21 - AKD-0424R2.02 - Dimmaktor Garage (AKD-0424R2.02 LED Controller 4 Kanal/RGBW, 2TE REG)
+- **Seriennummer**: AIODqAuy
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Kanal A | `K....` | Low | DPST-1-1 | `1/0/120` Garage-Innen-LED-Band-Nachbar-Schalten |
@@ -1359,6 +1381,8 @@ Taste | **EIN** | `1` |
 | 148 | Tag / Nacht | `K....` | Low | DPST-1-2 | `0/0/6` Astrofunktion: Tag = 0 / Nacht = 1 |
 
 ### 🔌 1.1.30 - Hörmann KNX-Gateway (KNX-Gateway)
+- **Seriennummer**: AAoSAhgX
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 1 | - | `K....` | Low |  | `0/1/10` Garagentor-Fahren<br>`0/1/46` Alles Auf - Ausgang 1 - Garagentor |
@@ -1396,6 +1420,8 @@ Taste | **EIN** | `1` |
 | 48 | - | `K....` | Low |  | `0/1/40` Garagentor-Status-Torposition-Ungültig |
 
 ### 🔌 1.1.50 - BE-GT20x.02 Glastaster II Smart (BE-GT20x.02 Glastaster II Smart)
+- **Seriennummer**: AIN/owQP
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | F1: Taste 1 | `K....` | Low |  | `0/1/45` Alles Auf - Eingang |
@@ -1436,6 +1462,8 @@ Taste | **EIN** | `1` |
 | 150 | Statuswert 2 | `K....` | Low |  | `7/2/50` Gartenhaus Feuchtigkeit |
 
 ### 🔌 1.1.51 - Garage Taster Tor-Nachbar (Taster Busankoppler AP WG 2fach Zweipunktbedienung)
+- **Seriennummer**: AAo7/CsX
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Taste 1 | `K.S..` | Low | DPT-5 | `0/1/10` Garagentor-Fahren<br>`0/1/17` Garagentor-Status-Offen |
@@ -1443,6 +1471,8 @@ Taste | **EIN** | `1` |
 | 3 | Taste 4 | `K....` | Low | DPT-5 | `0/1/0` Gartentor-Auf |
 
 ### 🔌 1.1.52 - Garage Taster Tor-Feld (Taster Busankoppler AP WG 2fach Zweipunktbedienung)
+- **Seriennummer**: AAo8pysX
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Taste 1 | `K.S..` | Low | DPT-5 | `0/1/10` Garagentor-Fahren<br>`0/1/17` Garagentor-Status-Offen |
@@ -1450,6 +1480,8 @@ Taste | **EIN** | `1` |
 | 3 | Taste 4 | `K....` | Low | DPT-5 | `0/1/0` Gartentor-Auf |
 
 ### 🔌 1.1.70 - KNX IO 410 - Binäreingang 4-fach Garage (KNX IO 410 (4I))
+- **Seriennummer**: AMUBBput
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 11 | GO_BASE_11 | `..S..` | Low | DPT-16 DPST-16-0 | - |
@@ -1461,6 +1493,8 @@ Taste | **EIN** | `1` |
 | 71 | GO_BASE_41 | `..S..` | Low | DPT-16 DPST-16-0 | - |
 
 ### 🔌 1.1.100 - 6131/31 Busch-Präsenzmelder Premium (6131/31 Busch-Präsenzmelder Premium)
+- **Seriennummer**: AAf0aKfD
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 3 | P1: Slave | `K....` | Low | DPST-1-1 | `7/4/120` Garage-Präsenz-Innen-Externe-Bewegung |
@@ -1478,6 +1512,8 @@ Taste | **EIN** | `1` |
 | 248 | GF1: Eingang 4 | `K....` | Low | DPST-5-1 | `1/1/123` Garage-Innen-LED-Band-Mitte-Status-Schalten |
 
 ### 🔌 1.1.101 - SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten (SCN-BWM55T.G2 Bewegungsmelder TS 55 mit T-Sensor und 2 Sensortasten)
+- **Seriennummer**: AIODthC/
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Lichtkanal 1 - Ausgang 1 | `K....` | Low |  | `7/4/120` Garage-Präsenz-Innen-Externe-Bewegung |
@@ -1489,6 +1525,8 @@ Taste | **EIN** | `1` |
 | 132 | Taste links | `K....` | Low | DPST-3-7 | `1/2/124` Gruppe-Garage-Innen-LED-Band-Dimmen-Relativ |
 
 ### 🔌 1.1.102 - theLuxa P300 KNX - Garage Präsenz Aussen Tor (theLuxa P300 KNX)
+- **Seriennummer**: AEgIAGWI
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Uhrzeit | `K....` | Low | DPST-10-1 | `0/0/1` Uhrzeit |
@@ -1500,6 +1538,7 @@ Taste | **EIN** | `1` |
 | 54 | C4 Bewegung | `K....` | Low | DPST-1-1 | `7/4/128` Garage-Präsenz-Aussen-Tor-Rechts |
 
 ### 🔌 1.1.201 - Raumtemperatursensor 1-fach UP (Raumtemperatursensor 1-fach UP)
+
 | Obj | Funktion / Name | Flags | Prio | DPT | Verknüpfte Gruppen |
 |---|---|---|---|---|---|
 | 0 | Temperaturmesswert | `K....` | Low | DPST-9-1 | `7/1/122` Garage Temperatur MDT Sensor |
