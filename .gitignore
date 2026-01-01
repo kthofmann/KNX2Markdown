@@ -12,6 +12,7 @@ __pycache__/
 *Export.md
 *.md
 !README.md
+!docs/*.md
 
 # Backups
 *_backup*.py
