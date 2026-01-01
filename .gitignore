@@ -9,9 +9,10 @@ __pycache__/
 *.knxproj
 ProjektReport/
 
+
 # Output
 *Export.md
-*.md
+# *.md
 !README.md
 !docs/*.md
 

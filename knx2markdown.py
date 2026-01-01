@@ -31,12 +31,16 @@ STRINGS = {
         'dev_header': 'Geräte',
         'dev_legend': '**Legende**:\n> * **Flags**: `A`=Adresse, `P`=Programm, `Pa`=Parameter, `G`=Gruppen, `K`=Konfig. [X] = Programmiert, [.] = Nicht programmiert, [?] = Unbekannt',
         'table_prodref': 'Produkt Ref',
+        'table_man': 'Hersteller',
+        'table_ordernum': 'Bestellnummer',
         'table_status': 'Prog. Status',
         'conn_header': 'Detaillierte Geräteverbindungen',
         'conn_legend': '**Legende**:\n> * **Flags**: `K`=Kommunikation, `L`=Lesen, `S`=Schreiben, `Ü`=Übertragen, `A`=Aktualisieren\n> * **Verknüpfungen**: `[S]` = Sendende Adresse (Erste Verknüpfung wenn Ü-Flag aktiv)',
         'conn_obj': 'Obj',
         'conn_func': 'Funktion / Name',
         'conn_flags': 'Flags',
+        'conn_prio': 'Prio',
+        'conn_dpt': 'DPT',
         'conn_links': 'Verknüpfte Gruppen',
         'param_header': 'Geräteparameter',
         'param_note': '**Hinweis**: Zeigt explizit konfigurierte Parameter aus der Projektdatei.',
@@ -78,12 +82,16 @@ STRINGS = {
         'dev_header': 'Devices',
         'dev_legend': '**Prog. Status**: `Ad`=Address, `Pr`=Program, `Pa`=Parameters, `Gr`=Groups, `Cf`=Config. [X] = Programmed, [.] = Not programmed, [?] = Unknown',
         'table_prodref': 'Product Ref',
+        'table_man': 'Manufacturer',
+        'table_ordernum': 'Order Number',
         'table_status': 'Prog. Status',
         'conn_header': 'Detailed Device Connections',
         'conn_legend': '**Legend**:\n> * **Flags**: `C`=Comm, `R`=Read, `W`=Write, `T`=Transmit, `U`=Update\n> * **Links**: `[S]` = Sending Address (First link if T-Flag is active)',
         'conn_obj': 'Obj',
         'conn_func': 'Function / Name',
         'conn_flags': 'Flags',
+        'conn_prio': 'Prio',
+        'conn_dpt': 'DPT',
         'conn_links': 'Linked Groups',
         'param_header': 'Device Parameters',
         'param_note': '**Note**: Shows explicitly configured parameters found in the project file.',
@@ -303,16 +311,25 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                         for ref in com_refs:
                             links_str = ref.attrib.get('Links', '')
                             ref_id = ref.attrib.get('RefId') # e.g., O-0_R-0
+                            override_prio = ref.attrib.get('Priority')
                             
                             # Resolve Name
                             obj_name = ""
+                            obj_dpt = ""
+                            obj_prio = "Low" # Default
+                            
                             final_ref_id = ref_id
                             
+                            # Helper to extract info from lookup result (dict or string legacy check not needed if we migrated all)
+                            def extract_co_info(lookup_res):
+                                if isinstance(lookup_res, dict):
+                                    return lookup_res.get('Name', ''), lookup_res.get('DPT', ''), lookup_res.get('Priority', 'Low')
+                                return lookup_res, "", "Low"
+
                             # --- MODULE RESOLUTION ---
                             resolved_num, def_co_id, mod_instance = resolve_module_ref(ref_id, app_prog_id)
                             if resolved_num is not None:
                                 final_ref_id = f"O-{resolved_num}"
-                                
                                 # 1. Try Template Substitution
                                 if def_co_id in template_lookup:
                                     template_str = template_lookup[def_co_id]
@@ -330,7 +347,7 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                                                 template_str = template_str.replace(f"{{{{{arg_name}}}}}", str(val))
                                         
                                         # Substitute {{0}} with Base Name
-                                        base_name = comobj_lookup.get(def_co_id, "")
+                                        base_name, base_dpt, base_prio = extract_co_info(comobj_lookup.get(def_co_id, {}))
                                         
                                         # Cleanup redundant suffixes if Base Name is "Channel A" or "Kanal A"
                                         if base_name in ["Channel A", "Kanal A"]:
@@ -344,27 +361,36 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                                             template_str = template_str.replace("{{0}}", base_name)
                                         
                                         obj_name = template_str
+                                        obj_dpt = base_dpt
+                                        obj_prio = base_prio
 
-                                # 2. Fallback to direct lookup
+                                # 2. Fallback to direct lookup if template didn't yield result (or wasn't applied)
+                                # Note: verify logic. If template found, obj_name is set.
                                 if not obj_name and def_co_id in comobj_lookup:
-                                    obj_name = comobj_lookup[def_co_id]
+                                    obj_name, obj_dpt, obj_prio = extract_co_info(comobj_lookup[def_co_id])
                             # -------------------------
                             
                             if not obj_name:
                                 base_id = ref_id.split('_')[0] if ref_id else ""
+                                found = None
                                 
                                 if base_id and app_prog_id:
                                     full_key = f"{app_prog_id}_{base_id}"
                                     if full_key in comobj_lookup:
-                                        obj_name = comobj_lookup[full_key]
+                                        found = comobj_lookup[full_key]
                                 
-                                # Fallback if full key failed
-                                if not obj_name and ref_id in comobj_lookup:
-                                    obj_name = comobj_lookup[ref_id]
+                                if not found and ref_id in comobj_lookup:
+                                    found = comobj_lookup[ref_id]
                                 
-                                if not obj_name and base_id in comobj_lookup:
-                                    obj_name = comobj_lookup[base_id]
+                                if not found and base_id in comobj_lookup:
+                                    found = comobj_lookup[base_id]
+                                    
+                                if found:
+                                    obj_name, obj_dpt, obj_prio = extract_co_info(found)
                             
+                            if override_prio:
+                                obj_prio = override_prio
+                                
                             linked_gas = []
                             if links_str:
                                 for ga_id in links_str.split(): 
@@ -383,6 +409,8 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                                 com_objects.append({
                                     'RefId': final_ref_id,
                                     'Name': obj_name,
+                                    'DPT': obj_dpt,
+                                    'Priority': obj_prio,
                                     'Links': linked_gas,
                                     'Flags': "".join(flags)
                                 })
@@ -450,11 +478,32 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                                     'RawValue': val
                                 })
 
+                    # Resolve Product Info
+                    cat_name = ""
+                    manufacturer = ""
+                    order_num = ""
+                    
+                    if product_ref in product_lookup:
+                        p_info = product_lookup[product_ref]
+                        if isinstance(p_info, dict):
+                             cat_name = p_info.get('Name', '')
+                             manufacturer = p_info.get('Manufacturer', '')
+                             order_num = p_info.get('OrderNumber', '')
+                        else:
+                             cat_name = p_info # fallback for legacy string
+                    
+                    dev_name = dev.attrib.get('Name', '').strip()
+                    if not dev_name:
+                        dev_name = cat_name
+
                     dev_obj = {
                         'Id': dev_id,
                         'Address': full_addr,
-                        'Name': dev.attrib.get('Name', ''),
+                        'Name': dev_name,
                         'ProductRef': product_ref,
+                        'CatalogName': cat_name,
+                        'Manufacturer': manufacturer,
+                        'OrderNumber': order_num,
                         'Description': dev.attrib.get('Description', ''),
                         'ComObjects': com_objects,
                         'Parameters': parameters,
@@ -465,6 +514,26 @@ def parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_ma
                         device_lookup[dev_id] = dev_obj
 
     return devices, device_lookup
+
+# Hardcoded Manufacturer Mapping (since MasterData is often missing in exports)
+MANUFACTURERS = {
+    "M-0001": "Siemens",
+    "M-0002": "ABB",
+    "M-0004": "Albrecht Jung",
+    "M-0005": "Berker",
+    "M-0007": "Busch-Jaeger",
+    "M-0008": "Gira",
+    "M-0009": "Hager",
+    "M-000A": "Insta",
+    "M-000C": "Merten",
+    "M-0048": "Theben AG",
+    "M-0060": "Hager",
+    "M-0083": "MDT Technologies",
+    "M-00A6": "Enertex Bayern GmbH",
+    "M-00C5": "Weinzierl Engineering GmbH",
+    "M-00C9": "B.E.G. Brück Electronic GmbH",
+    "M-0201": "Hörmann KG Verkaufsgesellschaft",
+}
 
 def parse_hardware_catalog(knxproj_path, language_code='de-DE'):
     """Parses M-*/Hardware.xml files to build lookup tables."""
@@ -484,25 +553,43 @@ def parse_hardware_catalog(knxproj_path, language_code='de-DE'):
                     if len(ns_match) > 1:
                          ns = {'knx': ns_match[0].strip('{')}
                     
-                    # Iterate Hardware elements
-                    for hw in root.findall('.//knx:Hardware', ns) if ns else root.findall('.//Hardware'):
-                        # Find App Program Ref
-                        app_ref = ""
-                        h2p = hw.find('.//knx:Hardware2Program', ns) if ns else hw.find('.//Hardware2Program')
-                        if h2p is not None:
-                            apr = h2p.find('knx:ApplicationProgramRef', ns) if ns else h2p.find('ApplicationProgramRef')
-                            if apr is not None:
-                                app_ref = apr.attrib.get('RefId')
+                    # Iterate Manufacturers to get Manufacturer Name
+                    manufacturers = root.findall('.//knx:Manufacturer', ns) if ns else root.findall('.//Manufacturer')
+                    for man in manufacturers:
+                        man_ref = man.attrib.get('RefId', '')
+                        man_name = man.attrib.get('Name', '')
                         
-                        # Find Products and map them
-                        products = hw.findall('.//knx:Product', ns) if ns else hw.findall('.//Product')
-                        for product in products:
-                            pid = product.attrib.get('Id')
-                            text = product.attrib.get('Text')
-                            if pid and text:
-                                product_lookup[pid] = text
-                            if pid and app_ref:
-                                product_app_map[pid] = app_ref
+                        if not man_name and man_ref in MANUFACTURERS:
+                            man_name = MANUFACTURERS[man_ref]
+                        elif not man_name:
+                             man_name = man_ref # Fallback to ID if unknown
+                        
+                        # Iterate Hardware elements within Manufacturer
+                        for hw in man.findall('.//knx:Hardware', ns) if ns else man.findall('.//Hardware'):
+                            # Find App Program Ref
+                            app_ref = ""
+                            h2p = hw.find('.//knx:Hardware2Program', ns) if ns else hw.find('.//Hardware2Program')
+                            if h2p is not None:
+                                apr = h2p.find('knx:ApplicationProgramRef', ns) if ns else h2p.find('ApplicationProgramRef')
+                                if apr is not None:
+                                    app_ref = apr.attrib.get('RefId')
+                            
+                            # Find Products and map them
+                            products = hw.findall('.//knx:Product', ns) if ns else hw.findall('.//Product')
+                            for product in products:
+                                pid = product.attrib.get('Id')
+                                text = product.attrib.get('Text')
+                                order_num = product.attrib.get('OrderNumber')
+                                
+                                if pid:
+                                    # Store dictionary instead of just text
+                                    product_lookup[pid] = {
+                                        'Name': text,
+                                        'Manufacturer': man_name,
+                                        'OrderNumber': order_num
+                                    }
+                                if pid and app_ref:
+                                    product_app_map[pid] = app_ref
                               
                     # Search for Translations (German preferred)
                     languages = root.findall('.//knx:Language', ns) if ns else root.findall('.//Language')
@@ -514,12 +601,14 @@ def parse_hardware_catalog(knxproj_path, language_code='de-DE'):
                                     # Look for Text content
                                     for element in unit.findall('knx:TranslationElement', ns) if ns else unit.findall('TranslationElement'):
                                          for trans in element.findall('knx:Translation', ns) if ns else element.findall('Translation'):
-                                             if trans.attrib.get('AttributeName') == 'Text':
-                                                 product_lookup[ref_id] = trans.attrib.get('Text')
+                                             attr = trans.attrib.get('AttributeName')
+                                             val = trans.attrib.get('Text')
+                                             if attr == 'Text':
+                                                 product_lookup[ref_id]['Name'] = val
 
                 except Exception as e:
                     print(f"Error parsing {filename}: {e}")
-                    
+                                                 
     return product_lookup, product_app_map
 
 def parse_application_programs(knxproj_path, language_code='de-DE'):
@@ -597,7 +686,11 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
                         
                         if ref_id:
                             name = text if text else (function_text if function_text else "")
-                            comobj_lookup[ref_id] = name
+                            comobj_lookup[ref_id] = {
+                                'Name': name,
+                                'DPT': co.attrib.get('DatapointType', ''),
+                                'Priority': co.attrib.get('Priority', 'Low')
+                            }
 
                     # 4. Parse ModuleDefs (Templates)
                     for md in root.findall('.//knx:ModuleDef', ns) if ns else root.findall('.//ModuleDef'):
@@ -619,7 +712,11 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
                             if co_id:
                                 # Add to global lookup too for name resolution
                                 name = co_text if co_text else (co_func if co_func else "")
-                                comobj_lookup[co_id] = name
+                                comobj_lookup[co_id] = {
+                                    'Name': name,
+                                    'DPT': co.attrib.get('DatapointType', ''),
+                                    'Priority': co.attrib.get('Priority', 'Low')
+                                }
                                 if co_num:
                                     co_map[co_id] = int(co_num)
                         
@@ -675,9 +772,9 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
                                          
                                          if target_ref in comobj_lookup:
                                              if attr == 'Text':
-                                                 comobj_lookup[target_ref] = text
-                                             elif attr == 'FunctionText' and not comobj_lookup[target_ref]:
-                                                  comobj_lookup[target_ref] = text
+                                                 comobj_lookup[target_ref]['Name'] = text
+                                             elif attr == 'FunctionText' and not comobj_lookup[target_ref]['Name']:
+                                                  comobj_lookup[target_ref]['Name'] = text
 
                                 # Parameter Translation
                                 if ref_id in param_lookup:
@@ -800,10 +897,12 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
 
         f.write(f"\n## {S['dev_header']}\n")
         f.write(f"> {S['dev_legend']}\n\n")
-        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_prodref']} | {S['table_status']} |\n")
-        f.write("|---|---|---|---|\n")
+        f.write(f"| {S['table_addr']} | {S['table_name']} | {S['table_ordernum']} | {S['table_prodref']} | {S['table_man']} | {S['table_status']} |\n")
+        f.write("|---|---|---|---|---|---|\n")
         for dev in sorted(devices, key=lambda x: [int(p) for p in x['Address'].split('.')]):
              cat_name = dev.get('CatalogName', '-')
+             manufacturer = dev.get('Manufacturer', '-')
+             order_num = dev.get('OrderNumber', '-')
              
              # Format Status
              # Ad Pr Pa Gr Cf
@@ -814,7 +913,7 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                  
              st_str = f"`{flag('Adr','Adr')}{flag('Prg','Prg')}{flag('Par','Par')}{flag('Grp','Grp')}{flag('Cfg','Cfg')}`"
              
-             f.write(f"| {dev['Address']} | {dev['Name']} | {cat_name} | {st_str} |\n")
+             f.write(f"| {dev['Address']} | {dev['Name']} | {order_num} | {cat_name} | {manufacturer} | {st_str} |\n")
 
         # --- Device Parameters Section ---
         f.write(f"\n## {S['param_header']}\n")
@@ -846,10 +945,10 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                 if dev['Description']:
                     f.write(f"- **{S['desc']}**: {dev['Description']}\n")
                 
-                f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_links']} |\n")
-                f.write("|---|---|---|---|\n")
+                f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_prio']} | {S['conn_dpt']} | {S['conn_links']} |\n")
+                f.write("|---|---|---|---|---|---|\n")
                 
-                # Logic to extract integer from RefId (e.g., "O-12_R-5" -> 12)
+                # Logic to extract integer fromRefId (e.g., "O-12_R-5" -> 12)
                 def get_obj_num(co):
                     try:
                         # Extract the first number found after 'O-'
@@ -871,6 +970,8 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                         obj_num = obj_num.split('O-')[-1].split('_')[0]
                     
                     name = co['Name'] if co['Name'] else "-"
+                    dpt = co.get('DPT', '')
+                    prio = co.get('Priority', '')
                     
                     raw_flags = co['Flags'] # e.g. "RWT"
                     
@@ -902,7 +1003,7 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                                 
                         links_formatted = "<br>".join(formatted_list)
                     
-                    f.write(f"| {obj_num} | {name} | {flags_visual} | {links_formatted} |\n")
+                    f.write(f"| {obj_num} | {name} | {flags_visual} | {prio} | {dpt} | {links_formatted} |\n")
                 f.write("\n")
 
         f.write(f"## {S['gas_header']}\n")
@@ -977,12 +1078,7 @@ def main():
     
     devices, device_lookup = parse_devices(root, product_lookup, ga_lookup, comobj_lookup, product_app_map, param_lookup, param_types, module_data, template_lookup)
     
-    # Enrich devices with Catalog Names
-    for dev in devices:
-        ref_id = dev['ProductRef']
-        if ref_id in product_lookup:
-            dev['CatalogName'] = product_lookup[ref_id]
-            
+    
     locations = parse_locations(root, device_lookup)
     
     # 6. Generate Output
