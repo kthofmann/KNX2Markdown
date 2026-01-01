@@ -12,7 +12,7 @@ ProjektReport/
 
 # Output
 *Export.md
-# *.md
+*.md
 !README.md
 !docs/*.md
 
