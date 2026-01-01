@@ -964,7 +964,10 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
         f.write(f"> {S['conn_legend']}\n\n")
         
         for dev in sorted(devices, key=lambda x: [int(p) for p in x['Address'].split('.')]):
-            if 'ComObjects' in dev and dev['ComObjects']:
+            has_com_objects = 'ComObjects' in dev and dev['ComObjects']
+            has_metadata = dev.get('SerialNumber') or dev.get('Comment') or dev.get('InstallationHints') or dev['Description']
+
+            if has_com_objects or has_metadata:
                 cat_name = dev.get('CatalogName', dev['ProductRef'])
                 f.write(f"### 🔌 {dev['Address']} - {dev['Name']} ({cat_name})\n")
                 if dev['Description']:
@@ -978,23 +981,25 @@ def generate_markdown(gas, devices, locations, filename, lang='de'):
                 
                 f.write(f"\n")
                 
-                f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_prio']} | {S['conn_dpt']} | {S['conn_links']} |\n")
-                f.write("|---|---|---|---|---|---|\n")
-                
-                # Logic to extract integer fromRefId (e.g., "O-12_R-5" -> 12)
-                def get_obj_num(co):
-                    try:
-                        # Extract the first number found after 'O-'
-                        ref = co['RefId']
-                        if 'O-' in ref:
-                            num_part = ref.split('O-')[1].split('_')[0]
-                            return int(num_part)
-                        return 999999 # Fallback for weird IDs
-                    except:
-                        return 999999
+                sorted_objects = []
+                if has_com_objects:
+                    f.write(f"| {S['conn_obj']} | {S['conn_func']} | {S['conn_flags']} | {S['conn_prio']} | {S['conn_dpt']} | {S['conn_links']} |\n")
+                    f.write("|---|---|---|---|---|---|\n")
+                    
+                    # Logic to extract integer fromRefId (e.g., "O-12_R-5" -> 12)
+                    def get_obj_num(co):
+                        try:
+                            # Extract the first number found after 'O-'
+                            ref = co['RefId']
+                            if 'O-' in ref:
+                                num_part = ref.split('O-')[1].split('_')[0]
+                                return int(num_part)
+                            return 999999 # Fallback for weird IDs
+                        except:
+                            return 999999
 
-                # Sort by Object Number
-                sorted_objects = sorted(dev['ComObjects'], key=get_obj_num)
+                    # Sort by Object Number
+                    sorted_objects = sorted(dev['ComObjects'], key=get_obj_num)
 
                 for co in sorted_objects:
                     # Clean up RefId
