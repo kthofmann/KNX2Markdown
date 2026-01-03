@@ -625,7 +625,7 @@ def parse_hardware_catalog(knxproj_path, language_code='de-DE'):
                                                  
     return product_lookup, product_app_map
 
-def parse_application_programs(knxproj_path, language_code='de-DE'):
+def parse_application_programs(knxproj_path, preferred_languages=['en-US', 'de-DE']):
     """
     Parses M-*/M-*.xml files to build:
     1. ComObject RefId -> {Text, FunctionText} lookup
@@ -757,8 +757,34 @@ def parse_application_programs(knxproj_path, language_code='de-DE'):
 
                     # 6. Translations
                     languages = root.findall('.//knx:Language', ns) if ns else root.findall('.//Language')
-                    for lang in languages:
-                        if lang.attrib.get('Identifier') == language_code:
+                    
+                    # Sort languages based on preference order (least preferred first, so most preferred overwrites)
+                    # Use a stable sort or manual iteration.
+                    # Actually, iterating through the preferred list is better.
+                    
+                    found_langs = {l.attrib.get('Identifier'): l for l in languages}
+                    
+                    # Iterate preferred languages. 
+                    # If we want fallback (en-US then de-DE), we should process them in that order ??
+                    # No, if 'de-DE' is preferred over 'en-US', we want de-DE to overwrite en-US.
+                    # So we process 'en-US' FIRST, then 'de-DE'.
+                    # User asked: "Generalize... German OR English if available".
+                    # Implicitly, German is preferred in a German project.
+                    # So order: en-US, then de-DE.
+                    
+                    # Effective list: reverse of preference if we want overwrite?
+                    # Or just Iterate: for lang_code in preferred_languages: if lang_code in found_langs: process...
+                    
+                    # Default: preferred_languages=['en-US', 'de-DE']
+                    # Process en-US -> sets English text.
+                    # Process de-DE -> sets German text (overwriting English).
+                    # Result: German if available, else English. Correct.
+                    
+                    for lang_code in preferred_languages:
+                        if lang_code in found_langs:
+                            lang = found_langs[lang_code]
+                            # print(f"DEBUG: Processing Language {lang_code} for {app_id}")
+                            
                             for unit in lang.findall('knx:TranslationUnit', ns) if ns else lang.findall('TranslationUnit'):
                                 ref_id = unit.attrib.get('RefId')
                                 
@@ -1106,8 +1132,17 @@ def main():
     print("Parsing Hardware Catalog (this might take a moment)...")
     product_lookup, product_app_map = parse_hardware_catalog(knxproj_path, lang_code)
     
+    # Determine preferred language order for fallback
+    # If target is DE, we process EN then DE (so DE overwrites EN)
+    # If target is EN, we process DE then EN (so EN overwrites DE)
+    # Fallback to defaults if other languages ever added
+    
+    preferred_langs = ['en-US', 'de-DE'] # Default/German
+    if args.lang == 'en':
+        preferred_langs = ['de-DE', 'en-US']
+    
     print("Parsing Application Programs for ComObject detailed names...")
-    comobj_lookup, param_lookup, param_types, module_data, template_lookup = parse_application_programs(knxproj_path, lang_code)
+    comobj_lookup, param_lookup, param_types, module_data, template_lookup = parse_application_programs(knxproj_path, preferred_languages=preferred_langs)
     
     # 5. Parse Data
     print("Parsing Group Addresses and Devices...")
