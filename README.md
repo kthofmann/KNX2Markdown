@@ -1,4 +1,4 @@
-# KNX2Markdown
+# knx2markdown
 
 A Python tool that creates comprehensive reports from ETS project files (`.knxproj`) and exports them as Markdown. Ideal for documentation, GitHub Wikis, or Obsidian.
 
@@ -15,7 +15,7 @@ Only Python 3 is required. No further dependencies.
 
 1.  Download the script:
     ```bash
-    curl -O https://raw.githubusercontent.com/kthofmann/KNX2Markdown/main/knx2markdown.py
+    curl -O https://raw.githubusercontent.com/kthofmann/knx2markdown/main/knx2markdown.py
     ```
 
 ## Usage

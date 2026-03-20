@@ -1,7 +1,7 @@
-# Project Architecture: KNX2Markdown
+# Project Architecture: knx2markdown
 
 ## Overview
-**KNX2Markdown** is a Python CLI tool created to convert KNX Project exports (`.knxproj`) into human-readable Markdown documentation. It is designed for offline use.
+**knx2markdown** is a Python CLI tool created to convert KNX Project exports (`.knxproj`) into human-readable Markdown documentation. It is designed for offline use.
 
 ## Core Implementation
 The script `knx2markdown.py` operates in a linear pipeline:

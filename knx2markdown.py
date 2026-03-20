@@ -67,7 +67,7 @@ STRINGS = {
     },
     'en': {
         'code': 'en-US',
-        'report_title': 'KNX2Markdown Report',
+        'report_title': 'knx2markdown Report',
         'stats_header': 'Project Statistics',
         'stats_ga': 'Group Addresses',
         'stats_dev': 'Devices',
