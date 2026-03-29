@@ -18,3 +18,20 @@ ProjektReport/
 
 # Backups
 *_backup*.py
+
+# Defense in Depth: Secrets & Keys
+.env*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.cert
+*.crt
+*_rsa
+id_rsa*
+*.p8
+*.jks
+secrets.yml
+secrets.yaml
+*.secret
